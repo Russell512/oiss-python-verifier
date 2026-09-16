@@ -230,7 +230,7 @@ python3 -m unittest discover -v
 
 OISS 測試包含規格中的 41-cycle 範例、generator 重現性、格式 round-trip、latency/opcode/graph 覆蓋，以及無 dependency 最佳化與完整 `8!` 搜尋的交叉比對。如果 `Real_Lab1/input.txt`／`output.txt` 存在，還會驗證全部 TA open patterns；公開 repository 沒有附這兩個課程檔案時，該項會自動 skip。
 
-開發環境的測試結果為 **69/69 通過**，另以一個 temporary 多檔 OISS fixture 實際測過多個 `--dut` sources、`--include-dir`、bit packing 與 output parser；fixture 只驗證 harness，不代表使用者 DUT 已通過。
+發佈版在不包含 TA 檔案的乾淨環境會執行 10 項測試：**9 項通過、1 項官方測資測試自動 skip**；放入 `Real_Lab1/input.txt`／`output.txt` 後則為 **10/10 通過**。另以一個 temporary 多檔 OISS fixture 實際測過多個 `--dut` sources、`--include-dir`、bit packing 與 output parser；fixture 只驗證 harness，不代表使用者 DUT 已通過。
 
 ## 重要限制
 
