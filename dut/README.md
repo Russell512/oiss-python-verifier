@@ -17,16 +17,22 @@ module OISS (
 );
 ```
 
-Then run from the repository root:
+First place the TA-provided 100-pattern files at:
+
+```text
+Real_Lab1/input.txt
+Real_Lab1/output.txt
+```
+
+Then run the official 100 patterns from the repository root. These are the
+default input, golden, DUT, and build paths:
 
 ```bash
-python3 -m oiss run \
-  --dut dut/OISS.v \
-  --input build/oiss_random_1000/input.txt \
-  --golden build/oiss_random_1000/output.txt \
-  --build build/oiss_random_1000/simulation \
-  --force
+python3 -m oiss run --force
 ```
+
+Only after the official set passes, generate and run additional edge/random
+patterns as documented in the main `README.md`.
 
 If the design has submodules, list every source after `--dut`. Use repeated
 `--include-dir` arguments for include files. Runtime `.mem`/`.hex` files must

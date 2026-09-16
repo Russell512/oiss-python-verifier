@@ -4,7 +4,7 @@
 
 課程 PDF、TA 的 `PATTERN.v`／`TESTBED.v` 及官方 open patterns 不包含在公開 repository；請從合法的課程來源取得。Verifier 本身只使用 Python 標準函式庫。
 
-## 快速開始
+## 快速開始：先跑官方 100 筆
 
 需求：Python 3.10 或更新版本。只有實際跑 Verilog 時才需要 Icarus Verilog。
 
@@ -12,17 +12,32 @@
 git clone https://github.com/Russell512/oiss-python-verifier.git
 cd oiss-python-verifier
 
-# 先確認 Python model
-python3 -m unittest -v tests.test_oiss
+# macOS
+brew install icarus-verilog
 
-# 驗證 repository 內附的 30 筆 smoke cases
-python3 -m oiss verify --input sample_cases/input.txt \
-  --golden sample_cases/output.txt
-
-# 產生 1,000 筆測資與 golden
-python3 -m oiss generate --count 1000 --seed 260916 \
-  --out build/oiss_random_1000 --force
+# Ubuntu / Debian（與上一行二選一）
+sudo apt-get install iverilog
 ```
+
+從課程來源取得官方檔案，並把自己的 DUT 放成以下結構：
+
+```text
+Real_Lab1/input.txt     # TA 官方 100 筆輸入
+Real_Lab1/output.txt    # TA 官方 100 筆 minimum-cycle golden
+dut/OISS.v              # 自己的 DUT
+```
+
+然後依序執行：
+
+```bash
+# 1. 確認 Python model 與官方 100 筆 golden 相符
+python3 -m oiss verify
+
+# 2. 編譯 OISS.v，跑官方 100 筆並與 Python/TA golden 比對
+python3 -m oiss run --force
+```
+
+`verify` 與 `run` 的預設值就是上面三個路徑；一般單檔設計不需要再輸入一長串參數。官方 100 筆通過後，再使用後面的 generator 產生 1,000 筆或任意數量的額外測資。
 
 Repository 內容：
 
@@ -30,27 +45,6 @@ Repository 內容：
 - `tests/`：不需要第三方 Python package 的 regression tests。
 - `sample_cases/`：30 筆已驗證的 smoke cases，不含課程官方資料。
 - `dut/`：使用者放置自己 RTL 的位置；預設忽略 `.v`／`.sv`，避免誤推作業。
-
-安裝 Icarus Verilog：
-
-```bash
-# macOS
-brew install icarus-verilog
-
-# Ubuntu / Debian
-sudo apt-get install iverilog
-```
-
-把自己的 top module 放在 `dut/OISS.v` 後：
-
-```bash
-python3 -m oiss run \
-  --dut dut/OISS.v \
-  --input build/oiss_random_1000/input.txt \
-  --golden build/oiss_random_1000/output.txt \
-  --build build/oiss_random_1000/simulation \
-  --force
-```
 
 ## 已確認的介面與檔案
 
@@ -100,7 +94,13 @@ PDF 第 4 頁最後一句提到「產生 address register 給 LOAD」，但同�
 
 ## 驗證 TA open patterns
 
-將合法取得的 `input.txt`、`output.txt` 放在 `Real_Lab1/` 後，從 repository 根目錄執行：
+將合法取得的 `input.txt`、`output.txt` 放在 `Real_Lab1/` 後，從 repository 根目錄執行預設命令：
+
+```bash
+python3 -m oiss verify
+```
+
+需要保存詳細 JSON 報告時，使用完整寫法：
 
 ```bash
 python3 -m oiss verify \
@@ -131,7 +131,7 @@ minimum_cycle issue_index_0 issue_index_1 ... issue_index_7
 
 ## 產生大量 edge/random patterns
 
-產生 1,000 筆可直接給 TA checker 或本專案 harness 使用的測資：
+確認官方 100 筆通過後，產生 1,000 筆可直接給 TA checker 或本專案 harness 使用的額外測資：
 
 ```bash
 python3 -m oiss generate \
@@ -158,7 +158,7 @@ Generator 會平均輪替三種 TA 保證的圖形：完全無 dependency、一�
 
 ```bash
 python3 -m oiss run \
-  --dut Real_Lab1/OISS.v \
+  --dut dut/OISS.v \
   --input build/oiss_random_1000/input.txt \
   --golden build/oiss_random_1000/output.txt \
   --build build/oiss_random_1000/simulation \
@@ -167,15 +167,10 @@ python3 -m oiss run \
 
 ## 測試你的 `OISS.v`
 
-若使用者將 DUT 放成 `dut/OISS.v`，可執行：
+若使用者將 DUT 放成 `dut/OISS.v`，第一步應先跑官方 100 筆。下面這條短指令使用預設的官方 `Real_Lab1/input.txt`／`output.txt`：
 
 ```bash
-python3 -m oiss run \
-  --dut dut/OISS.v \
-  --input build/oiss_random_1000/input.txt \
-  --golden build/oiss_random_1000/output.txt \
-  --build build/oiss \
-  --force
+python3 -m oiss run --force
 ```
 
 這個流程會：
@@ -191,9 +186,7 @@ python3 -m oiss run \
 ```bash
 python3 -m oiss run \
   --dut rtl/OISS.v rtl/scheduler.v rtl/dependency_graph.v \
-  --input build/oiss_random_1000/input.txt \
-  --golden build/oiss_random_1000/output.txt \
-  --build build/oiss_random_1000/simulation \
+  --build build/oiss \
   --force
 ```
 
@@ -204,9 +197,7 @@ python3 -m oiss run \
   --dut rtl/OISS.sv rtl/common_pkg.sv \
   --include-dir rtl/include \
   --include-dir rtl/generated \
-  --input build/oiss_random_1000/input.txt \
-  --golden build/oiss_random_1000/output.txt \
-  --build build/oiss_random_1000/simulation \
+  --build build/oiss \
   --force
 ```
 
