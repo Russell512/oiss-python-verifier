@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+build/
+*.vcd
+*.vvp
+simv
+simv.daidir/
+csrc/
+verification/reproduced/
+
+# Course/private material and the legacy DRCA workspace are intentionally not published.
+Real_Lab1/
+drca/
+docs/
+examples/
+rtl/
+scripts/
+source/
+verification/
+MANIFEST.sha256
+
+# A user's own submission remains local by default.
+dut/*.v
+dut/*.sv
+!dut/README.md

@@ -1,0 +1,29 @@
+{
+  "patterns": 30,
+  "seed": 260916,
+  "dependency_structures": {
+    "none": 10,
+    "one-chain": 10,
+    "two-chains": 10
+  },
+  "opcode_counts": {
+    "0": 34,
+    "1": 38,
+    "2": 42,
+    "3": 35,
+    "4": 34,
+    "5": 21,
+    "6": 23,
+    "7": 13
+  },
+  "dependency_type_hits": {
+    "RAW": 208,
+    "WAR": 150,
+    "WAW": 194
+  },
+  "sha256": {
+    "input.txt": "974cf488a189877ca346648e3c4926cdbfdd86d7d21e171779f02dfcbf3ba256",
+    "output.txt": "c193ae50695af498982f1b72006a24c6febf9923ba433b3e4ef4ee9ac657241f",
+    "solutions.txt": "51d93ac22e4f2225e39f7c210dabcd7148199109f0700f0ce7d526589a410c76"
+  }
+}
