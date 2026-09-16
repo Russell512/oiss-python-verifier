@@ -1,7 +1,8 @@
 name: tests
 
 on:
-  # Kept manual because this account may not currently have Actions billing enabled.
+  push:
+  pull_request:
   workflow_dispatch:
 
 jobs:
